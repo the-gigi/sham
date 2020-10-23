@@ -1,4 +1,4 @@
-module github.com/the-gigi/go-can
+module github.com/the-gigi/sham
 
 go 1.15
 

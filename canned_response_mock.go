@@ -1,4 +1,4 @@
-package go_can
+package sham
 
 import (
 	"fmt"

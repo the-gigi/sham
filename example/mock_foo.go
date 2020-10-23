@@ -1,11 +1,11 @@
 package main
 
 import (
-	can "github.com/the-gigi/go-can"
+	"github.com/the-gigi/sham"
 )
 
 type mockFoo struct {
-	can.CannedResponseMock
+	sham.CannedResponseMock
 }
 
 func (f *mockFoo) Bar() {
@@ -22,6 +22,6 @@ func (f *mockFoo) Baz(s string) (result int, err error) {
 	}
 
 	result = call.Result[0].(int)
-	err = can.ToError(call.Result[1])
+	err = sham.ToError(call.Result[1])
 	return
 }

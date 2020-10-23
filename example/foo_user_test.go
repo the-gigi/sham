@@ -5,7 +5,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	can "github.com/the-gigi/go-can"
+	"github.com/the-gigi/sham"
 )
 
 func TestSuccessfulFooBaz(t *testing.T) {
@@ -14,11 +14,11 @@ func TestSuccessfulFooBaz(t *testing.T) {
 	// two calls are expected:
 	// 1. Bar() with no arguments and no return values
 	// 2. Baz() with single string argument "two" and return values of 2 and nil
-	expectedCalls := []*can.FuncCall{
-		&can.FuncCall{
+	expectedCalls := []*sham.FuncCall{
+		&sham.FuncCall{
 			Name: "Bar",
 		},
-		&can.FuncCall{
+		&sham.FuncCall{
 			Name:   "Baz",
 			Args:   []interface{}{"two"},
 			Result: []interface{}{2, nil},
@@ -27,7 +27,7 @@ func TestSuccessfulFooBaz(t *testing.T) {
 
 	// Create the mock foo with the expected calls
 	m := &mockFoo{
-		can.CannedResponseMock{
+		sham.CannedResponseMock{
 			ExpectedCalls: expectedCalls,
 		},
 	}
@@ -57,11 +57,11 @@ func TestFailedFooBaz(t *testing.T) {
 	// two calls are expected:
 	// 1. Bar() with no arguments and no return values
 	// 2. Baz() with single string argument "two" and return values of 2 and nil
-	expectedCalls := []*can.FuncCall{
-		&can.FuncCall{
+	expectedCalls := []*sham.FuncCall{
+		&sham.FuncCall{
 			Name: "Bar",
 		},
-		&can.FuncCall{
+		&sham.FuncCall{
 			Name:   "Baz",
 			Args:   []interface{}{"xxxxx"},
 			Result: []interface{}{-1, errors.New(errorMessage)},
@@ -70,7 +70,7 @@ func TestFailedFooBaz(t *testing.T) {
 
 	// Create the mock foo with the expected calls
 	m := &mockFoo{
-		can.CannedResponseMock{
+		sham.CannedResponseMock{
 			ExpectedCalls: expectedCalls,
 		},
 	}
@@ -99,21 +99,21 @@ func TestBadCall(t *testing.T) {
 	// two calls are expected:
 	// 1. Bar() with no arguments and no return values
 	// 2. Baz() with single string argument "two" and return values of 2 and nil
-	expectedCalls := []*can.FuncCall{
-		&can.FuncCall{
+	expectedCalls := []*sham.FuncCall{
+		&sham.FuncCall{
 			Name: "Bar",
 		},
-		&can.FuncCall{
+		&sham.FuncCall{
 			Name: "WrongCallName",
 		},
 	}
 
 	// Create the mock foo with the expected calls and a bad call handler that stores the bad call in a local variable
-	var badCall *can.BadCall
+	var badCall *sham.BadCall
 	m := &mockFoo{
-		can.CannedResponseMock{
+		sham.CannedResponseMock{
 			ExpectedCalls: expectedCalls,
-			OnBadCall: func(call *can.BadCall) {
+			OnBadCall: func(call *sham.BadCall) {
 				badCall = call
 			},
 		},
