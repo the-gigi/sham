@@ -25,3 +25,10 @@ func (f *mockFoo) Baz(s string) (result int, err error) {
 	err = sham.ToError(call.Result[1])
 	return
 }
+
+func newMockFoo(calls []*sham.Call) (result *mockFoo, err error) {
+	result = &mockFoo{}
+	result.ExpectedCalls = calls
+	err = result.Invariant()
+	return
+}

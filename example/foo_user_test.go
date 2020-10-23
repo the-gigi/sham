@@ -14,22 +14,15 @@ func TestSuccessfulFooBaz(t *testing.T) {
 	// two calls are expected:
 	// 1. Bar() with no arguments and no return values
 	// 2. Baz() with single string argument "two" and return values of 2 and nil
-	expectedCalls := []*sham.FuncCall{
-		&sham.FuncCall{
-			Name: "Bar",
-		},
-		&sham.FuncCall{
-			Name:   "Baz",
-			Args:   []interface{}{"two"},
-			Result: []interface{}{2, nil},
-		},
+	expectedCalls := []*sham.Call{
+		sham.NewCall("Bar"),
+		sham.NewCall("Baz", "two").Return(2, nil),
 	}
 
 	// Create the mock foo with the expected calls
-	m := &mockFoo{
-		sham.CannedResponseMock{
-			ExpectedCalls: expectedCalls,
-		},
+	m, err := newMockFoo(expectedCalls)
+	if err != nil {
+		t.Fail()
 	}
 
 	// Call the code under test with the mock foo and the expected argument
@@ -57,11 +50,11 @@ func TestFailedFooBaz(t *testing.T) {
 	// two calls are expected:
 	// 1. Bar() with no arguments and no return values
 	// 2. Baz() with single string argument "two" and return values of 2 and nil
-	expectedCalls := []*sham.FuncCall{
-		&sham.FuncCall{
+	expectedCalls := []*sham.Call{
+		&sham.Call{
 			Name: "Bar",
 		},
-		&sham.FuncCall{
+		&sham.Call{
 			Name:   "Baz",
 			Args:   []interface{}{"xxxxx"},
 			Result: []interface{}{-1, errors.New(errorMessage)},
@@ -99,11 +92,11 @@ func TestBadCall(t *testing.T) {
 	// two calls are expected:
 	// 1. Bar() with no arguments and no return values
 	// 2. Baz() with single string argument "two" and return values of 2 and nil
-	expectedCalls := []*sham.FuncCall{
-		&sham.FuncCall{
+	expectedCalls := []*sham.Call{
+		&sham.Call{
 			Name: "Bar",
 		},
-		&sham.FuncCall{
+		&sham.Call{
 			Name: "WrongCallName",
 		},
 	}
