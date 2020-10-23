@@ -50,21 +50,14 @@ func TestFailedFooBaz(t *testing.T) {
 	// two calls are expected:
 	// 1. Bar() with no arguments and no return values
 	// 2. Baz() with single string argument "two" and return values of 2 and nil
-	expectedCalls := []*sham.Call{
-		&sham.Call{
-			Name: "Bar",
-		},
-		&sham.Call{
-			Name:   "Baz",
-			Args:   []interface{}{"xxxxx"},
-			Result: []interface{}{-1, errors.New(errorMessage)},
-		},
-	}
 
 	// Create the mock foo with the expected calls
 	m := &mockFoo{
 		sham.CannedResponseMock{
-			ExpectedCalls: expectedCalls,
+			ExpectedCalls: []*sham.Call{
+				sham.NewCall("Bar"),
+				sham.NewCall("Baz", "xxxxx").Return(-1, errors.New(errorMessage)),
+			},
 		},
 	}
 
@@ -91,14 +84,12 @@ func TestBadCall(t *testing.T) {
 	//
 	// two calls are expected:
 	// 1. Bar() with no arguments and no return values
-	// 2. Baz() with single string argument "two" and return values of 2 and nil
+	// 2. WrongCallName() with no arguments and no return values
+	//
+	// this will result in a bad call since "WrongCallName" will not be called.
 	expectedCalls := []*sham.Call{
-		&sham.Call{
-			Name: "Bar",
-		},
-		&sham.Call{
-			Name: "WrongCallName",
-		},
+		sham.NewCall("Bar"),
+		sham.NewCall("WrongCallName"),
 	}
 
 	// Create the mock foo with the expected calls and a bad call handler that stores the bad call in a local variable
@@ -115,7 +106,7 @@ func TestBadCall(t *testing.T) {
 	// Call the code under test with the mock foo and the expected argument
 	result, err := useFoo(m, "two")
 
-	// Verify the mock object is invalid state
+	// Verify the mock object is in invalid state (useFoo will call "Baz" instead of the expected "WrongCallName")
 	if m.IsValid() {
 		t.Fail()
 	}
@@ -138,5 +129,4 @@ func TestBadCall(t *testing.T) {
 	if result != -1 {
 		t.Fail()
 	}
-
 }
