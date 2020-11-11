@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
+	"reflect"
 )
 
 // Call keeps all the information about a specific function call:
@@ -115,13 +116,15 @@ func (c *CannedResponseMock) verifyCall(name string,
 	}
 
 	for i, arg := range args {
-		if call.Args[i] != arg {
-			err = recordBadCall(fmt.Sprintf("argument %d mismatch. expected: '%v'. got '%v'",
-				i,
-				call.Args[i],
-				arg))
-			return
+		if reflect.DeepEqual(call.Args[i], arg) {
+			continue
 		}
+
+		err = recordBadCall(fmt.Sprintf("argument %d mismatch. expected: '%v'. got '%v'",
+			i,
+			call.Args[i],
+			arg))
+		return
 	}
 
 	if len(call.Result) != resultCount {
