@@ -53,12 +53,15 @@ type CannedResponseMock struct {
 	OnBadCall     BadCallHandler
 }
 
-// Verify all expected calls were made and there were no bad calls
+// IsValid() verifies all expected calls were made and there were no bad calls
+//
+// users should called IsValid() after in their tests to ensure
+// all expected calls were invoked and there were no bad calls.
 func (c *CannedResponseMock) IsValid() bool {
 	return c.Index == len(c.ExpectedCalls) && c.BadCalls == nil
 }
 
-// Make sure there are expected calls and none of them are nil
+// Invariant() makes sure there are expected calls and none of them are nil
 func (c *CannedResponseMock) Invariant() error {
 	if len(c.ExpectedCalls) == 0 {
 		return errors.New("calls can't be empty")
@@ -71,6 +74,16 @@ func (c *CannedResponseMock) Invariant() error {
 	}
 
 	return nil
+}
+
+// Reset() resets the state but keeps the bad call handler
+//
+// This is useful when using the same mock object for several
+// invocations of the code under test
+func (c *CannedResponseMock) Reset() {
+	c.ExpectedCalls = nil
+	c.Index = 0
+	c.BadCalls = nil
 }
 
 // verifyCall ensures that the current call (function name and list of arguments) matches the expected call
