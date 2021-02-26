@@ -68,7 +68,7 @@ func TestSuccessfulFooBaz(t *testing.T) {
 		t.Fail()
 	}
 
-	// Verify the correct calls were made to the mocj object
+	// Verify the correct calls were made to the mock object
 	if !m.IsValid() {
 		t.Fail()
 	}

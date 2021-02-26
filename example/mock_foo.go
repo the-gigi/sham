@@ -9,10 +9,7 @@ type mockFoo struct {
 }
 
 func (f *mockFoo) Bar() {
-	_, err := f.VerifyCallNoArgs("Bar", 0)
-	if err != nil {
-		return
-	}
+	_, _ = f.VerifyCallNoArgs("Bar", 0)
 }
 
 func (f *mockFoo) Baz(s string) (result int, err error) {
