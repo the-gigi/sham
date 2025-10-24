@@ -15,7 +15,7 @@ Golang mock object that supports canned responses.
 - Automatic failure if expected call is called with wrong arguments
 - Verify that ALL expected calls were called
 
-# What do you don't get?
+# What do you NOT get?
 
 - Mock generators
 
